@@ -1,0 +1,51 @@
+# Configurazione servizi Symfony per OpenFiber
+# Posiziona questo file in: config/services.yaml
+
+services:
+    # OpenFiber Storage Services
+    OpenFiber\Storage\FileWsdlStorage:
+        arguments:
+            $storagePath: '%kernel.project_dir%/var/openfiber/wsdl'
+    
+    OpenFiber\Storage\FileSoapLogStorage:
+        arguments:
+            $storagePath: '%kernel.project_dir%/var/openfiber/logs'
+    
+    OpenFiber\Storage\FileRetryQueueStorage:
+        arguments:
+            $storagePath: '%kernel.project_dir%/var/openfiber/retry'
+    
+    # OpenFiber Logger
+    OpenFiber\SoapLogger:
+        arguments:
+            $logStorage: '@OpenFiber\Storage\FileSoapLogStorage'
+    
+    # OpenFiber Retry Policy
+    OpenFiber\RetryPolicy:
+        arguments:
+            $retryStorage: '@OpenFiber\Storage\FileRetryQueueStorage'
+            $maxAttempts: '%env(int:OPENFIBER_RETRY_MAX_ATTEMPTS)%'
+            $retryableErrors:
+                - 'Server.Timeout'
+                - 'Server.Unavailable'
+    
+    # OpenFiber Circuit Breaker
+    OpenFiber\CircuitBreaker:
+        arguments:
+            $failureThreshold: '%env(int:OPENFIBER_CB_FAILURE_THRESHOLD)%'
+            $timeoutSeconds: '%env(int:OPENFIBER_CB_TIMEOUT_SECONDS)%'
+    
+    # OpenFiber Client
+    OpenFiber\DynamicSoapClient:
+        arguments:
+            $serviceName: '%env(OPENFIBER_SERVICE_NAME)%'
+            $wsdlStorage: '@OpenFiber\Storage\FileWsdlStorage'
+            $logger: '@OpenFiber\SoapLogger'
+            $retryPolicy: '@OpenFiber\RetryPolicy'
+        # Rendi pubblico per poterlo iniettare nei controller
+        public: true
+    
+    # Alias per facilitare l'utilizzo
+    OpenFiber\Interfaces\WsdlStorageInterface: '@OpenFiber\Storage\FileWsdlStorage'
+    OpenFiber\Interfaces\LoggerInterface: '@OpenFiber\SoapLogger'
+    OpenFiber\Interfaces\RetryPolicyInterface: '@OpenFiber\RetryPolicy'

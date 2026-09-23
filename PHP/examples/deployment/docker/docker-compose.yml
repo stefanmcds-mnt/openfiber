@@ -1,0 +1,65 @@
+version: '3.8'
+
+services:
+  openfiber-app:
+    build:
+      context: ../../..
+      dockerfile: examples/deployment/docker/Dockerfile
+    container_name: openfiber-app
+    environment:
+      - APP_ENV=production
+      - OPENFIBER_SERVICE_NAME=${OPENFIBER_SERVICE_NAME:-default}
+      - OPENFIBER_WSDL_URL=${OPENFIBER_WSDL_URL}
+      - OPENFIBER_USERNAME=${OPENFIBER_USERNAME}
+      - OPENFIBER_PASSWORD=${OPENFIBER_PASSWORD}
+      - OPENFIBER_RETRY_MAX_ATTEMPTS=${OPENFIBER_RETRY_MAX_ATTEMPTS:-3}
+    volumes:
+      - openfiber_storage:/app/storage
+      - ./logs:/app/logs
+    networks:
+      - openfiber-network
+    restart: unless-stopped
+
+  openfiber-worker:
+    build:
+      context: ../../..
+      dockerfile: examples/deployment/docker/Dockerfile
+    container_name: openfiber-worker
+    command: php worker/worker.php
+    environment:
+      - APP_ENV=production
+      - OPENFIBER_SERVICE_NAME=${OPENFIBER_SERVICE_NAME:-default}
+      - OPENFIBER_WSDL_URL=${OPENFIBER_WSDL_URL}
+      - OPENFIBER_USERNAME=${OPENFIBER_USERNAME}
+      - OPENFIBER_PASSWORD=${OPENFIBER_PASSWORD}
+    volumes:
+      - openfiber_storage:/app/storage
+    networks:
+      - openfiber-network
+    restart: unless-stopped
+    depends_on:
+      - openfiber-app
+
+  # Optional: Database per lo storage
+  # database:
+  #   image: mysql:8.0
+  #   container_name: openfiber-db
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+  #     MYSQL_DATABASE: openfiber
+  #     MYSQL_USER: ${DB_USER}
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   volumes:
+  #     - db_data:/var/lib/mysql
+  #   networks:
+  #     - openfiber-network
+
+volumes:
+  openfiber_storage:
+    driver: local
+  # db_data:
+  #   driver: local
+
+networks:
+  openfiber-network:
+    driver: bridge

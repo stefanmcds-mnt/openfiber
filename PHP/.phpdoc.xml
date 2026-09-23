@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor
+    configVersion="3"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="https://www.phpdoc.org"
+    xsi:noNamespaceSchemaLocation="https://docs.phpdoc.org/latest/phpdoc.xsd"
+>
+    <title>OpenFiber API Documentation</title>
+    <paths>
+        <output>docs/api</output>
+    </paths>
+    <version number="2.0.0">
+        <folder>latest</folder>
+        <api>
+            <source dsn=".">
+                <path>src</path>
+            </source>
+            <output>docs/api</output>
+            <ignore hidden="true" symlinks="true">
+                <path>*/tests/*</path>
+                <path>*/vendor/*</path>
+                <path>*/examples/*</path>
+            </ignore>
+            <extensions>
+                <extension>php</extension>
+            </extensions>
+            <visibility>public</visibility>
+            <visibility>protected</visibility>
+            <default-package-name>OpenFiber</default-package-name>
+            <markers>
+                <item>TODO</item>
+                <item>FIXME</item>
+            </markers>
+        </api>
+    </version>
+    <template name="clean"/>
+</phpdocumentor>

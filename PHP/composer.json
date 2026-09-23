@@ -1,0 +1,33 @@
+{
+    "name": "stefanmcds-mnt/openfiber",
+    "description": "Package PHP 8.4 agnostico per l'interfacciamento dinamico e asincrono tra OLO e il B2B Gateway di Open Fiber",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "STEFAN MCDS & C. SAS",
+            "email": "info@stefan-mcds.it"
+        }
+    ],
+    "require": {
+        "php": ">=8.4.0",
+        "ext-soap": "*",
+        "ext-curl": "*",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "psr/log": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "*",
+        "phpstan/phpstan": "*",
+        "friendsofphp/php-cs-fixer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "OpenFiber\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

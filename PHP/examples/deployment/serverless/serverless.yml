@@ -1,0 +1,82 @@
+# Serverless Framework Configuration for OpenFiber
+# Deploy with: serverless deploy
+
+service: openfiber-service
+
+provider:
+  name: aws
+  runtime: provided.al2
+  region: eu-west-1
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 30
+  
+  # IAM Permissions
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: 
+        - arn:aws:logs:*:*:*
+  
+  # Environment variables
+  environment:
+    APP_ENV: ${self:provider.stage}
+    OPENFIBER_SERVICE_NAME: ${env:OPENFIBER_SERVICE_NAME}
+    OPENFIBER_WSDL_URL: ${env:OPENFIBER_WSDL_URL}
+    OPENFIBER_USERNAME: ${env:OPENFIBER_USERNAME}
+    OPENFIBER_PASSWORD: ${env:OPENFIBER_PASSWORD}
+    OPENFIBER_RETRY_MAX_ATTEMPTS: ${env:OPENFIBER_RETRY_MAX_ATTEMPTS, '3'}
+
+plugins:
+  - ./vendor/bref/bref
+
+functions:
+  openfiber:
+    handler: handler.php
+    description: OpenFiber SOAP Gateway Handler
+    layers:
+      - ${bref:layer.php-84}
+    events:
+      - http:
+          path: /soap
+          method: post
+          cors: true
+      - http:
+          path: /health
+          method: get
+          cors: true
+
+  # Worker per retry queue
+  worker:
+    handler: worker.php
+    description: OpenFiber Retry Queue Worker
+    layers:
+      - ${bref:layer.php-84}
+    events:
+      - schedule:
+          rate: rate(5 minutes)
+          enabled: true
+
+package:
+  patterns:
+    - '!.git/**'
+    - '!tests/**'
+    - '!examples/**'
+    - '!docs/**'
+    - 'src/**'
+    - 'vendor/**'
+    - 'handler.php'
+    - 'worker.php'
+
+# CloudFormation resources
+resources:
+  Resources:
+    # CloudWatch Log Group
+    OpenFiberLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/lambda/${self:service}-${self:provider.stage}-openfiber
+        RetentionInDays: 7
