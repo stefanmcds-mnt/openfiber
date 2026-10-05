@@ -10,11 +10,11 @@ use Exception;
 
 class RetryPolicy implements RetryPolicyInterface
 {
-    private RetryQueueStorageInterface $storage;
+    //private RetryQueueStorageInterface $storage;
 
-    public function __construct(RetryQueueStorageInterface $storage)
+    public function __construct(?RetryQueueStorageInterface $storage, ?int $maxAttempts=null, ?array $retryableErrors=null)
     {
-        $this->storage = $storage;
+        //$this->storage = $storage;
     }
 
     public function shouldRetry(Exception $e): bool

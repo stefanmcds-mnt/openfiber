@@ -20,6 +20,7 @@ use OpenFiber\RetryPolicy;
 use OpenFiber\Storage\FileSoapLogStorage;
 use OpenFiber\Storage\FileRetryQueueStorage;
 use OpenFiber\Interfaces\DynamicDtoInterface;
+use OpenFiber\Dto\BaseDto;
 use OpenFiber\Exception\SoapCommunicationException;
 use OpenFiber\Exception\ConfigurationException;
 
@@ -54,7 +55,7 @@ $retryStorage = new FileRetryQueueStorage($retryDir);
 
 $logger = new SoapLogger($logStorage);
 $retryPolicy = new RetryPolicy(
-    retryStorage: $retryStorage,
+    storage: $retryStorage,
     maxAttempts: 3,
     retryableErrors: ['Server.Timeout', 'Server.Unavailable']
 );
@@ -63,15 +64,23 @@ $retryPolicy = new RetryPolicy(
 // PREPARA IL DTO (Data Transfer Object)
 // ====================================================================
 
-// Crea un DTO anonimo con property hooks (PHP 8.4)
-$activationDto = new class implements DynamicDtoInterface {
+// Definisci una classe DTO concreta che estende BaseDto
+class ActivationDto extends BaseDto
+{
     public function __construct(
         public string $orderId = 'ORD-12345',
         public string $customerCode = 'CUST-001',
         public string $serviceType = 'FTTH',
         public string $address = 'Via Roma 1, Milano'
     ) {
-        // Property hooks per validazione automatica
+        // Popola l'array dati ereditato da BaseDto
+        parent::__construct([
+            'orderId' => $orderId,
+            'customerCode' => $customerCode,
+            'serviceType' => $serviceType,
+            'address' => $address,
+        ]);
+        // Validazione in constructor (sostituisce i property hooks di PHP 8.4)
         $this->orderId = trim($orderId);
         if (empty($this->orderId)) {
             throw new InvalidArgumentException('Order ID cannot be empty');
@@ -92,7 +101,10 @@ $activationDto = new class implements DynamicDtoInterface {
     {
         return !empty($this->orderId) && !empty($this->customerCode);
     }
-};
+}
+
+// Istanzia il DTO
+$activationDto = new ActivationDto();
 
 // ====================================================================
 // CREA ED UTILIZZA IL CLIENT

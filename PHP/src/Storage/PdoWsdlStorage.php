@@ -6,7 +6,8 @@ namespace OpenFiber\Storage;
 use OpenFiber\Interfaces\WsdlStorageInterface;
 use PDO;
 
-class PdoWsdlStorage implements WsdlStorageInterface
+//class PdoWsdlStorage implements WsdlStorageInterface
+class PdoWsdlStorage extends BaseWsdlStorage
 {
     private PDO $pdo;
 
@@ -23,7 +24,7 @@ class PdoWsdlStorage implements WsdlStorageInterface
         return $result ? $result['wsdl_raw'] : null;
     }
 
-    public function getWsdlVar(string $serviceName): ?array
+    public function getWsdlVar(string $serviceName): array
     {
         $stmt = $this->pdo->prepare('SELECT wsdl_var FROM of_wsdl_storage WHERE service_name = ?');
         $stmt->execute([$serviceName]);

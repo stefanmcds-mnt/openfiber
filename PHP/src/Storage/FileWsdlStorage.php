@@ -5,7 +5,8 @@ namespace OpenFiber\Storage;
 
 use OpenFiber\Interfaces\WsdlStorageInterface;
 
-class FileWsdlStorage implements WsdlStorageInterface
+//class FileWsdlStorage implements WsdlStorageInterface
+class FileWsdlStorage extends BaseWsdlStorage
 {
     private string $storageDir;
 
@@ -26,7 +27,7 @@ class FileWsdlStorage implements WsdlStorageInterface
         return file_get_contents($filePath);
     }
 
-    public function getWsdlVar(string $serviceName): ?array
+    public function getWsdlVar(string $serviceName): array
     {
         return [];
     }

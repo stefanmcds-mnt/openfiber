@@ -39,7 +39,7 @@ echo "🔧 Configurazione Retry Policy Avanzata\n";
 echo "======================================\n\n";
 
 $retryPolicy = new RetryPolicy(
-    retryStorage: $retryStorage,
+    storage: $retryStorage,
     maxAttempts: 5,              // Massimo 5 tentativi
     retryableErrors: [
         'Server.Timeout',         // Timeout del server

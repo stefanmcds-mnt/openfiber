@@ -18,7 +18,7 @@ class WsdlDownloader
      * @param string $wsdlContent
      * @return string JSON delle variabili estratte
      */
-    private function extractWsdlVariables(string $wsdlContent): string
+    private function extractWsdlVariables(string $wsdlContent): array|string
     {
         // Carica il XML
         $dom = new DOMDocument();

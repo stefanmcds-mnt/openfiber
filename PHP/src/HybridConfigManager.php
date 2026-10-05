@@ -33,8 +33,7 @@ class HybridConfigManager implements ConfigRepositoryInterface
     public function set(string $key, mixed $value): bool 
     {
         // 1. Salva su Database
-        $stmt = $this->db->prepare("INSERT INTO of_package_config (config_key, config_value) VALUES (?, ?) 
-                                    ON DUPLICATE KEY UPDATE config_value = ?");
+        $stmt = $this->db->prepare("INSERT INTO of_package_config (config_key, config_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE config_value = ?");
         $dbSuccess = $stmt->execute([$key, (string)$value, (string)$value]);
 
         // 2. Salva su File di configurazione locale locale
@@ -51,9 +50,11 @@ class HybridConfigManager implements ConfigRepositoryInterface
         // Scrittura File nudo e crudo
         $fileSuccess = file_put_contents($localPath, $rawContent) !== false;
 
+        // Recupero Delle Variabili
+        
+
         // Scrittura DB
-        $stmt = $this->db->prepare("INSERT INTO of_wsdl_storage (service_name, wsdl_url, wsdl_raw, wsdl_var, local_path)
-                                    VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE wsdl_raw = ?, wsdl_var = ?, local_path = ?");
+        $stmt = $this->db->prepare("INSERT INTO of_wsdl_storage (service_name, wsdl_url, wsdl_raw, wsdl_var, local_path) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE wsdl_raw = ?, wsdl_var = ?, local_path = ?");
         $dbSuccess = $stmt->execute([$serviceName, $url, $rawContent, $variablesJson, $localPath, $rawContent, $variablesJson, $localPath]);
 
         return $fileSuccess && $dbSuccess;

@@ -4,9 +4,12 @@ declare(strict_types=1);
 namespace OpenFiber\Config;
 
 use OpenFiber\Interfaces\ConfigProvider;
+use OpenFiber\Traits\CastableValueTrait;
 
 class EnvConfigProvider implements ConfigProvider
 {
+    use CastableValueTrait;
+
     private ?string $prefix;
 
     public function __construct(?string $prefix = 'OPENFIBER_')
@@ -29,22 +32,4 @@ class EnvConfigProvider implements ConfigProvider
         return false;
     }
 
-    private function castValue(mixed $value): mixed
-    {
-        if ($value === 'true') return true;
-        if ($value === 'false') return false;
-        if ($value === 'null') return null;
-        
-        // Try to parse as integer
-        if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-            return (int) $value;
-        }
-        
-        // Try to parse as float
-        if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-            return (float) $value;
-        }
-        
-        return $value;
-    }
 }

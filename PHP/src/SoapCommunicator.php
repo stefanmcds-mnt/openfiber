@@ -7,7 +7,7 @@ use OpenFiber\Interfaces\SoapCommunicatorInterface;
 use OpenFiber\Interfaces\WsdlStorageInterface;
 use OpenFiber\Exception\WsdlNotFoundException;
 use OpenFiber\Exception\SoapCommunicationException;
-use SoapClient;
+use OpenFiber\Soap\BaseSoapClientExtension;
 use SoapFault;
 
 class SoapCommunicator implements SoapCommunicatorInterface

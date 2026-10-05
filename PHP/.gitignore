@@ -41,6 +41,9 @@ Thumbs.db
 /plans/
 /src/wsdl/*.*
 /var/
+/old/
+AGENTS*.*
+AGENTS.md
 README_*.*
 CHANGELOG_*.*
 esempio*.*

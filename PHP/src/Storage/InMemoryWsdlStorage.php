@@ -14,6 +14,11 @@ class InMemoryWsdlStorage implements WsdlStorageInterface
         return $this->wsdls[$serviceName] ?? null;
     }
 
+    public function getWsdlVar(string $serviceName): array
+    {
+        return $this->wsdls[$serviceName] ?? null;
+    }
+
     public function saveWsdl(string $serviceName, string $url, string $content, string $variablesJson = ''): bool
     {
         $this->wsdls[$serviceName] = $content;

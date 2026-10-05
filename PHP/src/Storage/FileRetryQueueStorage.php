@@ -5,7 +5,8 @@ namespace OpenFiber\Storage;
 
 use OpenFiber\Interfaces\RetryQueueStorageInterface;
 
-class FileRetryQueueStorage implements RetryQueueStorageInterface
+//class FileRetryQueueStorage implements RetryQueueStorageInterface
+class FileRetryQueueStorage extends BaseWsdlStorage
 {
     private string $storageDir;
     private string $queueFile;

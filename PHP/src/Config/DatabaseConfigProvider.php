@@ -5,9 +5,12 @@ namespace OpenFiber\Config;
 
 use OpenFiber\Interfaces\ConfigProvider;
 use PDO;
+use OpenFiber\Traits\CastableValueTrait;
 
 class DatabaseConfigProvider implements ConfigProvider
 {
+    use CastableValueTrait;
+
     private PDO $pdo;
 
     public function __construct(PDO $pdo)
@@ -38,17 +41,4 @@ class DatabaseConfigProvider implements ConfigProvider
         return $stmt->execute([$key, (string)$value, (string)$value]);
     }
 
-    private function castValue(mixed $value): mixed
-    {
-        if (filter_var($value, FILTER_VALIDATE_INT) !== false) {
-            return (int) $value;
-        }
-        if (filter_var($value, FILTER_VALIDATE_FLOAT) !== false) {
-            return (float) $value;
-        }
-        if ($value === 'true') return true;
-        if ($value === 'false') return false;
-        
-        return $value;
-    }
 }

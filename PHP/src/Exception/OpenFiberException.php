@@ -73,4 +73,24 @@ class OpenFiberException extends Exception
         
         return $message;
     }
+
+    public function getSuggestions(): array
+    {
+        return $this->generateSuggestions();
+    }
+    
+    protected function generateSuggestions(): array
+    {
+        return [
+            'Check configuration settings',
+            'Verify service availability',
+            'Review logs for detailed error information',
+            'Contact support if issue persists'
+        ];
+    }
+    
+    protected function addSpecificSuggestions(array $suggestions): array
+    {
+        return array_merge($this->generateSuggestions(), $suggestions);
+    }    
 }
